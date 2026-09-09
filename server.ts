@@ -1,6 +1,7 @@
 import 'dotenv/config'; // Run dotenv config first before any module hoisting
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import { register, trace } from '@arizeai/phoenix-otel';
 import { createServer as createViteServer } from 'vite';
@@ -60,6 +61,55 @@ if (API_KEY) {
 } else {
   console.log('No GEMINI_API_KEY detected. Server running in Rule-Based Smart Diagnostic mode.');
 }
+
+const WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
+
+// Waitlist Email Collection API Endpoint
+app.post('/api/waitlist', (req, res) => {
+  const { email } = req.body;
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid email address is required.' });
+  }
+
+  try {
+    let list: any[] = [];
+    if (fs.existsSync(WAITLIST_FILE)) {
+      const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
+      list = JSON.parse(content || '[]');
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const existing = list.find((item: any) => item.email.toLowerCase() === normalizedEmail);
+
+    if (!existing) {
+      list.push({
+        email: normalizedEmail,
+        timestamp: new Date().toISOString(),
+        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'
+      });
+      fs.writeFileSync(WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
+      console.log(`✉️ New Waitlist Signup: ${normalizedEmail} (Total: ${list.length})`);
+    }
+
+    return res.json({ success: true, count: list.length });
+  } catch (err) {
+    console.error('Failed to save waitlist email:', err);
+    return res.status(500).json({ error: 'Failed to save waitlist email.' });
+  }
+});
+
+// View all collected waitlist signups
+app.get('/api/waitlist', (req, res) => {
+  try {
+    if (fs.existsSync(WAITLIST_FILE)) {
+      const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
+      return res.json(JSON.parse(content || '[]'));
+    }
+    return res.json([]);
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to read waitlist.' });
+  }
+});
 
 /**
  * Server-Side endpoint to generate customized wellness telemetry insights

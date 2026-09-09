@@ -19,12 +19,14 @@ import { WaterIntakeProportionsWidget } from './WaterIntakeProportionsWidget';
 import { WaitlistForm } from './WaitlistForm';
 import { LedVibrationSimulator } from './LedVibrationSimulator';
 import { LegalModal } from './LegalModal';
+import { HydrationGateModal } from './HydrationGateModal';
 
 interface LandingPageProps {
   onOpenAppDashboard?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = () => {
+  const [showHydrationGate, setShowHydrationGate] = useState<boolean>(true);
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
   const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
   const [heroState, setHeroState] = useState<'mild' | 'high'>('mild');
@@ -578,6 +580,12 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           </div>
         </div>
       </footer>
+
+      {/* Initial Interactive Hydration Gate Check Popup */}
+      <HydrationGateModal
+        isOpen={showHydrationGate}
+        onComplete={() => setShowHydrationGate(false)}
+      />
 
       {/* Terms of Service & Privacy Policy Modal */}
       <LegalModal

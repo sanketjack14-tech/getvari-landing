@@ -24,14 +24,21 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
 
     setLoading(true);
 
+    // Save to server backend waitlist API
+    fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.trim() }),
+    }).catch((err) => console.error('Waitlist API error:', err));
+
     setTimeout(() => {
       try {
         const stored = localStorage.getItem('getvari_waitlist');
         const list: WaitlistEntry[] = stored ? JSON.parse(stored) : [];
         
-        if (!list.some(item => item.email.toLowerCase() === email.toLowerCase())) {
+        if (!list.some(item => item.email.toLowerCase() === email.trim().toLowerCase())) {
           list.push({
-            email,
+            email: email.trim(),
             timestamp: new Date().toISOString()
           });
           localStorage.setItem('getvari_waitlist', JSON.stringify(list));
@@ -42,7 +49,7 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
 
       setLoading(false);
       setSubmitted(true);
-    }, 800);
+    }, 600);
   };
 
   if (submitted) {
