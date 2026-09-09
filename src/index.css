@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-display {
+    font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  }
+  .font-body {
+    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+  }
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .glass-card {
+    background: rgba(13, 18, 30, 0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .glass-card-hover:hover {
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 12px 40px -10px rgba(56, 189, 248, 0.18);
+    transform: translateY(-2px);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.35);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 45px -5px rgba(59, 130, 246, 0.3);
+  }
+
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #e0f2fe 0%, #00f2fe 50%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .glow-orange {
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.35));
+  }
+}
+
+/* Strictly Inside-to-Outside LED & Haptic Ring Wave Animation */
+@keyframes ringInsideOutPulse {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+.ring-pulse-wave-1 {
+  animation: ringInsideOutPulse 4.8s cubic-bezier(0.16, 1, 0.3, 1) infinite !important;
+  transform-origin: center center;
+}
+
+.ring-pulse-wave-2 {
+  animation: ringInsideOutPulse 4.8s cubic-bezier(0.16, 1, 0.3, 1) 2.4s infinite !important;
+  transform-origin: center center;
+}
+
+/* Elegant Light Mode overrides */
+.light-mode {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #020813 !important;
+}
+
+.light-mode.dot-grid {
+  background-image: radial-gradient(rgba(2, 8, 19, 0.08) 1px, transparent 1px) !important;
+}
+
+/* Pristine white background for cards with clean light-grey borders in light mode */
+.light-mode .glass {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-color: rgba(2, 8, 19, 0.08) !important;
+  box-shadow: 0 10px 30px -10px rgba(2, 8, 19, 0.04) !important;
+  color: #020813 !important;
+}
+
+/* Force light gray/slate for nested grey-background blocks (Suggested Action, AI insights cards) to avoid the dark gray slop */
+.light-mode .bg-neutral-900\/60,
+.light-mode .bg-neutral-900\/40,
+.light-mode [class*="bg-neutral-"],
+.light-mode [class*="bg-black/"],
+.light-mode [class*="bg-white/"],
+.light-mode [class*="bg-[#051124]"] {
+  background-color: #f8fafc !important; /* Bright soft slate-50 */
+  background: #f8fafc !important;
+  color: #020813 !important;
+  border-color: rgba(2, 8, 19, 0.08) !important;
+}
+
+/* Specific text overrides with explicit rule boundaries for 100% browser compatibility */
+.light-mode .text-white {
+  color: #020813 !important;
+}
+.light-mode .text-neutral-50 {
+  color: #020813 !important;
+}
+.light-mode .text-neutral-100 {
+  color: #020813 !important;
+}
+.light-mode .text-neutral-200 {
+  color: #020813 !important;
+}
+.light-mode .text-neutral-300 {
+  color: #020813 !important;
+}
+.light-mode .text-neutral-450 {
+  color: #0d234d !important;
+}
+.light-mode .text-neutral-400 {
+  color: #0d234d !important;
+}
+.light-mode .text-gray-400 {
+  color: #2f5393 !important;
+}
+.light-mode .text-gray-500 {
+  color: #2f5393 !important;
+}
+.light-mode .text-neutral-500 {
+  color: #172554 !important;
+}
+
+/* Ensure Cyan highlights have beautiful high-contrast legibility when theme is light */
+.light-mode .text-cyan-300,
+.light-mode .text-cyan-400,
+.light-mode .text-[#00f2fe] {
+  color: #0284c7 !important; /* Sky/Cyan 600 - beautiful contrast on white */
+}
+
+.light-mode .hover\:bg-white\/5:hover,
+.light-mode .hover\:bg-neutral-800:hover {
+  background-color: rgba(2, 8, 19, 0.04) !important;
+}
+
+/* High-contrast pastel background colors for special status tags / alerts */
+.light-mode .bg-cyan-950\/20,
+.light-mode .bg-cyan-500\/10 {
+  background-color: rgba(2, 132, 199, 0.06) !important;
+  background: rgba(2, 132, 199, 0.06) !important;
+  border-color: rgba(2, 132, 199, 0.15) !important;
+}
+
+.light-mode .bg-amber-500\/10,
+.light-mode .bg-amber-500\/5 {
+  background-color: rgba(245, 158, 11, 0.06) !important;
+  background: rgba(245, 158, 11, 0.06) !important;
+  border-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.light-mode .bg-emerald-500\/10,
+.light-mode .bg-emerald-500\/5 {
+  background-color: rgba(16, 185, 129, 0.06) !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+  border-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+.light-mode .bg-red-500\/10,
+.light-mode .bg-red-500\/5 {
+  background-color: rgba(239, 68, 68, 0.06) !important;
+  background: rgba(239, 68, 68, 0.06) !important;
+  border-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Crisp, clear border colors in light mode */
+.light-mode .border-white\/5,
+.light-mode .border-white\/10,
+.light-mode .border-neutral-850,
+.light-mode .border-neutral-800,
+.light-mode .border-neutral-800\/80,
+.light-mode .border-neutral-800\/85,
+.light-mode .border-neutral-900,
+.light-mode .border-white\/15,
+.light-mode .border-white\/20,
+.light-mode .border-cyan-500\/15,
+.light-mode .border-cyan-400\/15,
+.light-mode [class*="border-white/"],
+.light-mode [class*="border-neutral-"] {
+  border-color: rgba(2, 8, 19, 0.1) !important;
+}
+
+/* Highlight boxes gradients */
+.light-mode .bg-gradient-to-r.from-neutral-900 {
+  background-image: linear-gradient(to right, #ffffff, #ffffff) !important;
+}
+
+/* Nav bar fixes */
+.light-mode footer#main-nav-bar {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(2, 8, 19, 0.15) !important;
+  box-shadow: 0 10px 30px -10px rgba(2, 8, 19, 0.15) !important;
+}
+
+.light-mode footer#main-nav-bar button {
+  color: #1c3b70 !important;
+}
+
+.light-mode footer#main-nav-bar button.bg-white\/10 {
+  background-color: rgba(2, 8, 19, 0.06) !important;
+  color: #020813 !important;
+}
+
+/* Ensure prompt inputs and drop-down selectors are readable in light mode */
+.light-mode select,
+.light-mode input[type="text"],
+.light-mode input[type="number"],
+.light-mode textarea {
+  background-color: #ffffff !important;
+  color: #020813 !important;
+  border: 1px solid rgba(2, 8, 19, 0.2) !important;
+}
+
+.light-mode select option {
+  background-color: #ffffff !important;
+  color: #020813 !important;
+}
+
+/* Circular hydration ring container stroke on white background */
+.light-mode circle[stroke="rgba(255,255,255,0.03)"] {
+  stroke: rgba(2, 8, 19, 0.05) !important;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
