@@ -571,12 +571,6 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
 
           <div className="flex items-center gap-6 text-xs text-gray-400 font-mono-tech">
             <button
-              onClick={() => setShowWaitlistAdmin(true)}
-              className="hover:text-cyan-400 transition-colors cursor-pointer text-cyan-500/80 font-bold"
-            >
-              Waitlist Console
-            </button>
-            <button
               onClick={() => setLegalModalType('terms')}
               className="hover:text-cyan-400 transition-colors cursor-pointer"
             >
