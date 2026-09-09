@@ -13,11 +13,21 @@ export const HydrationGateModal: React.FC<HydrationGateModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   const handleYes = () => {
+    try {
+      sessionStorage.setItem('getvari_hydration_gate_seen', 'true');
+    } catch (e) {
+      console.error(e);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
     onComplete();
   };
 
   const handleComplete = () => {
+    try {
+      sessionStorage.setItem('getvari_hydration_gate_seen', 'true');
+    } catch (e) {
+      console.error(e);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
     onComplete();
   };

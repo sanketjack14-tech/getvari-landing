@@ -27,9 +27,24 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = () => {
-  const [showHydrationGate, setShowHydrationGate] = useState<boolean>(true);
+  const [showHydrationGate, setShowHydrationGate] = useState<boolean>(() => {
+    try {
+      return !sessionStorage.getItem('getvari_hydration_gate_seen');
+    } catch {
+      return true;
+    }
+  });
   const [showWaitlistAdmin, setShowWaitlistAdmin] = useState<boolean>(false);
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
+
+  const handleGateComplete = () => {
+    try {
+      sessionStorage.setItem('getvari_hydration_gate_seen', 'true');
+    } catch (e) {
+      console.error(e);
+    }
+    setShowHydrationGate(false);
+  };
   const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
   const [heroState, setHeroState] = useState<'mild' | 'high'>('mild');
 
@@ -592,10 +607,10 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
         onClose={() => setShowWaitlistAdmin(false)}
       />
 
-      {/* Initial Interactive Hydration Gate Check Popup */}
+      {/* Initial Interactive Hydration Gate Check Popup (Seen once per session) */}
       <HydrationGateModal
         isOpen={showHydrationGate}
-        onComplete={() => setShowHydrationGate(false)}
+        onComplete={handleGateComplete}
       />
 
       {/* Terms of Service & Privacy Policy Modal */}
