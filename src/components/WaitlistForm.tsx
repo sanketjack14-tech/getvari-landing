@@ -38,7 +38,7 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
 
   const validationState = validateEmail(email);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
 
@@ -48,32 +48,38 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
 
     setLoading(true);
 
-    // Save to server backend waitlist API
-    fetch('/api/waitlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.trim() }),
-    }).catch((err) => console.error('Waitlist API error:', err));
-
-    setTimeout(() => {
-      try {
-        const stored = localStorage.getItem('getvari_waitlist');
-        const list: WaitlistEntry[] = stored ? JSON.parse(stored) : [];
-        
-        if (!list.some(item => item.email.toLowerCase() === email.trim().toLowerCase())) {
-          list.push({
-            email: email.trim(),
-            timestamp: new Date().toISOString()
-          });
-          localStorage.setItem('getvari_waitlist', JSON.stringify(list));
-        }
-      } catch (e) {
-        console.error(e);
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        console.log('✉️ Waitlist signup captured successfully:', data);
       }
+    } catch (err) {
+      console.error('Waitlist API error:', err);
+    }
 
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+    // Also backup to localStorage
+    try {
+      const stored = localStorage.getItem('getvari_waitlist');
+      const list: WaitlistEntry[] = stored ? JSON.parse(stored) : [];
+      
+      if (!list.some(item => item.email.toLowerCase() === email.trim().toLowerCase())) {
+        list.push({
+          email: email.trim(),
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('getvari_waitlist', JSON.stringify(list));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    setLoading(false);
+    setSubmitted(true);
   };
 
   if (submitted) {
