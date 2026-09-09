@@ -1,24 +1,48 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2, Sparkles, Lock, Mail } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Lock, Mail, AlertCircle, Check } from 'lucide-react';
 
 interface WaitlistEntry {
   email: string;
   timestamp: string;
 }
 
+const DISPOSABLE_DOMAINS = [
+  'tempmail.com', 'mailinator.com', '10minutemail.com', 
+  'yopmail.com', 'dispostable.com', 'guerrillamail.com', 'trashmail.com'
+];
+
 export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ variant = 'section' }) => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
+
+  // Live RFC 5322 Regex Validation
+  const validateEmail = (val: string): { isValid: boolean; message: string } => {
+    const trimmed = val.trim();
+    if (!trimmed) return { isValid: false, message: '' };
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmed)) {
+      return { isValid: false, message: 'Please enter a valid email (e.g. name@domain.com)' };
+    }
+
+    const domain = trimmed.split('@')[1]?.toLowerCase();
+    if (domain && DISPOSABLE_DOMAINS.includes(domain)) {
+      return { isValid: false, message: 'Temporary/disposable email addresses are not accepted.' };
+    }
+
+    return { isValid: true, message: 'Valid email format' };
+  };
+
+  const validationState = validateEmail(email);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setTouched(true);
 
-    if (!email || !email.includes('@') || !email.includes('.')) {
-      setError('Please enter a valid email address.');
+    if (!validationState.isValid) {
       return;
     }
 
@@ -80,19 +104,41 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
               <Mail className="w-4 h-4" />
             </div>
+
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setTouched(true);
+              }}
+              onBlur={() => setTouched(true)}
               placeholder="Enter your email for priority access"
-              className="w-full pl-10 pr-4 py-3.5 bg-black/60 border border-white/15 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 rounded-xl text-white placeholder-gray-500 text-sm font-body transition-all outline-none"
+              className={`w-full pl-10 pr-10 py-3.5 bg-black/60 border rounded-xl text-white placeholder-gray-500 text-sm font-body transition-all outline-none ${
+                touched && email
+                  ? validationState.isValid
+                    ? 'border-emerald-400/80 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20'
+                    : 'border-red-500/80 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-white/15 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20'
+              }`}
               required
             />
+
+            {/* Live Indicator Icon inside input */}
+            {touched && email && (
+              <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
+                {validationState.isValid ? (
+                  <Check className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-red-400" />
+                )}
+              </div>
+            )}
           </div>
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (touched && !!email && !validationState.isValid)}
             className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-bold font-display text-sm tracking-wide transition-all duration-300 shadow-[0_0_25px_rgba(56,189,248,0.4)] hover:shadow-[0_0_35px_rgba(56,189,248,0.6)] flex items-center justify-center gap-2 cursor-pointer shrink-0 disabled:opacity-50"
           >
             {loading ? (
@@ -106,8 +152,16 @@ export const WaitlistForm: React.FC<{ variant?: 'hero' | 'section' }> = ({ varia
           </button>
         </div>
 
-        {error && (
-          <p className="text-xs text-red-400 font-mono-tech text-left">{error}</p>
+        {/* Live Validation Feedback Message */}
+        {touched && email && !validationState.isValid && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-1.5 text-xs text-red-400 font-mono-tech text-left pl-1"
+          >
+            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-400" />
+            <span>{validationState.message}</span>
+          </motion.div>
         )}
 
         {/* Aligned guarantee note under input */}

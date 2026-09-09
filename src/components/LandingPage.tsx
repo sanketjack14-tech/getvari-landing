@@ -20,6 +20,7 @@ import { WaitlistForm } from './WaitlistForm';
 import { LedVibrationSimulator } from './LedVibrationSimulator';
 import { LegalModal } from './LegalModal';
 import { HydrationGateModal } from './HydrationGateModal';
+import { WaitlistAdminModal } from './WaitlistAdminModal';
 
 interface LandingPageProps {
   onOpenAppDashboard?: () => void;
@@ -27,6 +28,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = () => {
   const [showHydrationGate, setShowHydrationGate] = useState<boolean>(true);
+  const [showWaitlistAdmin, setShowWaitlistAdmin] = useState<boolean>(false);
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
   const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
   const [heroState, setHeroState] = useState<'mild' | 'high'>('mild');
@@ -569,6 +571,12 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
 
           <div className="flex items-center gap-6 text-xs text-gray-400 font-mono-tech">
             <button
+              onClick={() => setShowWaitlistAdmin(true)}
+              className="hover:text-cyan-400 transition-colors cursor-pointer text-cyan-500/80 font-bold"
+            >
+              Waitlist Console
+            </button>
+            <button
               onClick={() => setLegalModalType('terms')}
               className="hover:text-cyan-400 transition-colors cursor-pointer"
             >
@@ -583,6 +591,12 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
           </div>
         </div>
       </footer>
+
+      {/* Admin Waitlist Emails Viewer Modal */}
+      <WaitlistAdminModal
+        isOpen={showWaitlistAdmin}
+        onClose={() => setShowWaitlistAdmin(false)}
+      />
 
       {/* Initial Interactive Hydration Gate Check Popup */}
       <HydrationGateModal
