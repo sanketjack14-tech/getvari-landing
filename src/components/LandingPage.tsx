@@ -134,34 +134,37 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
               
               {/* Dynamic Product Image Container */}
               <div className="relative w-full h-[300px] sm:h-[350px] flex items-center justify-center">
-                {/* Manual Score Selector Buttons */}
-                <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/80 p-1 rounded-xl border border-white/10 text-[10px] font-mono-tech z-10">
-                  <button
-                    onClick={() => setHeroState('mild')}
-                    className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                      heroState === 'mild' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40' : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    65 (Mild)
-                  </button>
-                  <button
-                    onClick={() => setHeroState('high')}
-                    className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                      heroState === 'high' ? 'bg-red-500/20 text-red-400 font-bold border border-red-500/40' : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    85 (High Risk)
-                  </button>
-                </div>
+                {/* Top Controls & Hydration Risk Status Header */}
+                <div className="absolute top-2 left-2 right-2 flex flex-wrap items-center justify-between gap-2 z-10 pointer-events-auto">
+                  {/* Manual Score Selector Buttons */}
+                  <div className="flex items-center gap-1 bg-black/85 backdrop-blur-md p-1 rounded-xl border border-white/10 text-[10px] font-mono-tech shadow-lg">
+                    <button
+                      onClick={() => setHeroState('mild')}
+                      className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+                        heroState === 'mild' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40' : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      65 (Mild)
+                    </button>
+                    <button
+                      onClick={() => setHeroState('high')}
+                      className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+                        heroState === 'high' ? 'bg-red-500/20 text-red-400 font-bold border border-red-500/40' : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      85 (High Risk)
+                    </button>
+                  </div>
 
-                {/* Floating Hydration Risk Score Tag */}
-                <div className="absolute top-2 right-2 px-3 py-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono-tech shadow-lg flex items-center gap-2 z-10 transition-all">
-                  <span className={`w-2.5 h-2.5 rounded-full animate-ping ${
-                    heroState === 'high' ? 'bg-red-500' : 'bg-amber-400'
-                  }`} />
-                  <span className={heroState === 'high' ? 'text-red-400 font-bold' : 'text-cyan-300 font-semibold'}>
-                    Hydration Risk Score: {heroState === 'high' ? '85' : '65'}
-                  </span>
+                  {/* Floating Hydration Risk Score Tag */}
+                  <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono-tech shadow-lg flex items-center gap-1.5 transition-all">
+                    <span className={`w-2 h-2 rounded-full animate-ping ${
+                      heroState === 'high' ? 'bg-red-500' : 'bg-amber-400'
+                    }`} />
+                    <span className={heroState === 'high' ? 'text-red-400 font-bold' : 'text-cyan-300 font-semibold'}>
+                      <span className="hidden sm:inline">Hydration </span>Risk: {heroState === 'high' ? '85' : '65'}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Dynamic Product Images with Smooth 700ms Crossfade */}
