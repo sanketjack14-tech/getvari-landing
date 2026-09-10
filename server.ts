@@ -234,7 +234,7 @@ app.get('/api/waitlist', (req, res) => {
 
     <div class="footer-note">
       <span>Auto-synced to <code>/waitlist.json</code></span>
-      <span>© 2026 getVāri Technologies</span>
+      <span>© 2026 getVāri Technologies Private Limited. All rights reserved.</span>
     </div>
   </div>
 </body>

@@ -128,7 +128,7 @@ export const LandingPageVersionB: React.FC = () => {
       <footer className="relative z-40 w-full bg-[#050811]/90 backdrop-blur-xl border-t border-white/10 py-3 shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400 font-mono-tech">
           <div>
-            © 2026 getVāri. All rights reserved. Screenless Hydration Intelligence.
+            © 2026 getVāri Technologies Private Limited. All rights reserved.
           </div>
           
           <div className="flex items-center gap-4">

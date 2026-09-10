@@ -606,7 +606,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
               get<span className="text-cyan-400">Vāri</span>
             </span>
             <span className="text-xs text-gray-400 font-mono-tech">
-              © 2026 getVāri Technologies Pvt. Ltd.
+              © 2026 getVāri Technologies Private Limited. All rights reserved.
             </span>
           </div>
 
