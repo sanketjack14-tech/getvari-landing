@@ -49,14 +49,8 @@ const ROLLING_POINTS = [
 ];
 
 export const LandingPageVersionB: React.FC<LandingPageVersionBProps> = ({ onSwitchToVersionA }) => {
-  // Gate popup state (seen once per session)
-  const [showHydrationGate, setShowHydrationGate] = useState<boolean>(() => {
-    try {
-      return !sessionStorage.getItem('getvari_hydration_gate_seen');
-    } catch {
-      return true;
-    }
-  });
+  // Gate popup state (always show when opening Version B)
+  const [showHydrationGate, setShowHydrationGate] = useState<boolean>(true);
 
   const handleGateComplete = () => {
     try {
@@ -102,6 +96,14 @@ export const LandingPageVersionB: React.FC<LandingPageVersionBProps> = ({ onSwit
 
           {/* Action CTAs & Version Toggle */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowHydrationGate(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-400/30 text-xs font-mono-tech font-bold text-cyan-300 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span>Open Popup</span>
+            </button>
+
             {onSwitchToVersionA && (
               <button
                 onClick={onSwitchToVersionA}
