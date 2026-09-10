@@ -1,9 +1,95 @@
 import fs from 'fs';
 import path from 'path';
 
-const WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
+const LOCAL_WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
+const TMP_WAITLIST_FILE = path.join('/tmp', 'waitlist.json');
+
+declare global {
+  var __WAITLIST_STORE__: any[];
+}
+
+if (!globalThis.__WAITLIST_STORE__) {
+  globalThis.__WAITLIST_STORE__ = [];
+}
+
+function getWaitlistEntries(): any[] {
+  const map = new Map<string, any>();
+
+  // 1. Read from local repo file if exists
+  try {
+    if (fs.existsSync(LOCAL_WAITLIST_FILE)) {
+      const content = fs.readFileSync(LOCAL_WAITLIST_FILE, 'utf-8');
+      const list = JSON.parse(content || '[]');
+      list.forEach((item: any) => {
+        if (item && item.email) map.set(item.email.toLowerCase(), item);
+      });
+    }
+  } catch (e) {
+    // Ignore read errors
+  }
+
+  // 2. Read from /tmp file if exists
+  try {
+    if (fs.existsSync(TMP_WAITLIST_FILE)) {
+      const content = fs.readFileSync(TMP_WAITLIST_FILE, 'utf-8');
+      const list = JSON.parse(content || '[]');
+      list.forEach((item: any) => {
+        if (item && item.email) map.set(item.email.toLowerCase(), item);
+      });
+    }
+  } catch (e) {
+    // Ignore read errors
+  }
+
+  // 3. Combine with in-memory store
+  if (Array.isArray(globalThis.__WAITLIST_STORE__)) {
+    globalThis.__WAITLIST_STORE__.forEach((item: any) => {
+      if (item && item.email) map.set(item.email.toLowerCase(), item);
+    });
+  }
+
+  return Array.from(map.values());
+}
+
+function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): any[] {
+  const list = getWaitlistEntries();
+  const normalized = newEntry.email.trim().toLowerCase();
+
+  const existingIndex = list.findIndex(item => item.email.toLowerCase() === normalized);
+  if (existingIndex === -1) {
+    list.push({
+      email: normalized,
+      timestamp: newEntry.timestamp || new Date().toISOString(),
+      ip: newEntry.ip || 'unknown'
+    });
+  }
+
+  globalThis.__WAITLIST_STORE__ = list;
+
+  // Try local file first (for dev mode), fallback to /tmp (for Vercel serverless)
+  try {
+    fs.writeFileSync(LOCAL_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e) {
+    try {
+      fs.writeFileSync(TMP_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('Failed to write to /tmp:', err);
+    }
+  }
+
+  return list;
+}
 
 export default async function handler(req: any, res: any) {
+  // CORS Headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method === 'POST') {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const email = body.email;
@@ -12,42 +98,23 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'Valid email address is required.' });
     }
 
-    let list: any[] = [];
     try {
-      if (fs.existsSync(WAITLIST_FILE)) {
-        const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
-        list = JSON.parse(content || '[]');
-      }
+      const updatedList = saveWaitlistEntry({
+        email,
+        timestamp: new Date().toISOString(),
+        ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown'
+      });
 
-      const normalizedEmail = email.trim().toLowerCase();
-      const existing = list.find((item: any) => item.email.toLowerCase() === normalizedEmail);
-
-      if (!existing) {
-        list.push({
-          email: normalizedEmail,
-          timestamp: new Date().toISOString(),
-          ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown'
-        });
-        fs.writeFileSync(WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
-      }
-
-      return res.status(200).json({ success: true, count: list.length });
+      console.log(`✉️ Waitlist Signup captured: ${email.trim().toLowerCase()} (Total: ${updatedList.length})`);
+      return res.status(200).json({ success: true, count: updatedList.length });
     } catch (e) {
-      console.error(e);
+      console.error('Waitlist POST error:', e);
       return res.status(500).json({ error: 'Failed to save waitlist entry.' });
     }
   }
 
   // GET Request
-  let list: any[] = [];
-  try {
-    if (fs.existsSync(WAITLIST_FILE)) {
-      const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
-      list = JSON.parse(content || '[]');
-    }
-  } catch (e) {
-    console.error(e);
-  }
+  const list = getWaitlistEntries();
 
   const acceptsJson = req.query?.format === 'json' || (req.headers?.accept && req.headers.accept.includes('application/json') && !req.headers.accept.includes('text/html'));
   if (acceptsJson) {

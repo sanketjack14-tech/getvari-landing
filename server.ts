@@ -64,7 +64,74 @@ if (API_KEY) {
   console.log('No GEMINI_API_KEY detected. Server running in Rule-Based Smart Diagnostic mode.');
 }
 
-const WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
+const LOCAL_WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
+const TMP_WAITLIST_FILE = path.join('/tmp', 'waitlist.json');
+
+declare global {
+  var __WAITLIST_STORE__: any[];
+}
+
+if (!globalThis.__WAITLIST_STORE__) {
+  globalThis.__WAITLIST_STORE__ = [];
+}
+
+function getWaitlistEntries(): any[] {
+  const map = new Map<string, any>();
+
+  try {
+    if (fs.existsSync(LOCAL_WAITLIST_FILE)) {
+      const content = fs.readFileSync(LOCAL_WAITLIST_FILE, 'utf-8');
+      const list = JSON.parse(content || '[]');
+      list.forEach((item: any) => {
+        if (item && item.email) map.set(item.email.toLowerCase(), item);
+      });
+    }
+  } catch (e) {}
+
+  try {
+    if (fs.existsSync(TMP_WAITLIST_FILE)) {
+      const content = fs.readFileSync(TMP_WAITLIST_FILE, 'utf-8');
+      const list = JSON.parse(content || '[]');
+      list.forEach((item: any) => {
+        if (item && item.email) map.set(item.email.toLowerCase(), item);
+      });
+    }
+  } catch (e) {}
+
+  if (Array.isArray(globalThis.__WAITLIST_STORE__)) {
+    globalThis.__WAITLIST_STORE__.forEach((item: any) => {
+      if (item && item.email) map.set(item.email.toLowerCase(), item);
+    });
+  }
+
+  return Array.from(map.values());
+}
+
+function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): any[] {
+  const list = getWaitlistEntries();
+  const normalized = newEntry.email.trim().toLowerCase();
+
+  const existingIndex = list.findIndex(item => item.email.toLowerCase() === normalized);
+  if (existingIndex === -1) {
+    list.push({
+      email: normalized,
+      timestamp: newEntry.timestamp || new Date().toISOString(),
+      ip: newEntry.ip || 'unknown'
+    });
+  }
+
+  globalThis.__WAITLIST_STORE__ = list;
+
+  try {
+    fs.writeFileSync(LOCAL_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e) {
+    try {
+      fs.writeFileSync(TMP_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
+    } catch (err) {}
+  }
+
+  return list;
+}
 
 // Waitlist Email Collection API Endpoint
 app.post('/api/waitlist', (req, res) => {
@@ -74,40 +141,23 @@ app.post('/api/waitlist', (req, res) => {
   }
 
   try {
-    let list: any[] = [];
-    if (fs.existsSync(WAITLIST_FILE)) {
-      const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
-      list = JSON.parse(content || '[]');
-    }
-
-    const normalizedEmail = email.trim().toLowerCase();
-    const existing = list.find((item: any) => item.email.toLowerCase() === normalizedEmail);
-
-    if (!existing) {
-      list.push({
-        email: normalizedEmail,
-        timestamp: new Date().toISOString(),
-        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'
-      });
-      fs.writeFileSync(WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
-      console.log(`✉️ New Waitlist Signup: ${normalizedEmail} (Total: ${list.length})`);
-    }
-
-    return res.json({ success: true, count: list.length });
+    const updatedList = saveWaitlistEntry({
+      email,
+      timestamp: new Date().toISOString(),
+      ip: (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown'
+    });
+    console.log(`✉️ New Waitlist Signup: ${email.trim().toLowerCase()} (Total: ${updatedList.length})`);
+    return res.json({ success: true, count: updatedList.length });
   } catch (err) {
     console.error('Failed to save waitlist email:', err);
     return res.status(500).json({ error: 'Failed to save waitlist email.' });
   }
 });
 
-// View all collected waitlist signups (Renders HTML Table UI for browser, JSON for API/fetch)
+// View all collected waitlist signups
 app.get('/api/waitlist', (req, res) => {
   try {
-    let list: any[] = [];
-    if (fs.existsSync(WAITLIST_FILE)) {
-      const content = fs.readFileSync(WAITLIST_FILE, 'utf-8');
-      list = JSON.parse(content || '[]');
-    }
+    const list = getWaitlistEntries();
 
     // Return JSON if client explicitly requests JSON (e.g. fetch or curl -H "Accept: application/json")
     const acceptsJson = req.query.format === 'json' || (req.headers.accept && req.headers.accept.includes('application/json') && !req.headers.accept.includes('text/html'));
