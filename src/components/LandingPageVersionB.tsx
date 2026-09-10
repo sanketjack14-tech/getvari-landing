@@ -68,28 +68,8 @@ export const LandingPageVersionB: React.FC = () => {
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-4 lg:py-6 overflow-y-auto lg:overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto">
 
-          {/* LEFT COLUMN: CONTINUOUS ROLLING TEXT TICKER & BRIGHT WHITE GOOGLE AI STUDIO HEADLINE */}
+          {/* LEFT COLUMN: CONTINUOUS ROLLING TEXT & BRIGHT WHITE GOOGLE AI STUDIO HEADLINE */}
           <div className="lg:col-span-7 flex flex-col justify-center space-y-6">
-            
-            {/* Top Continuous Marquee Ticker */}
-            <div className="overflow-hidden rounded-full bg-cyan-950/30 border border-cyan-500/20 py-2 px-4 backdrop-blur-md">
-              <div className="flex items-center gap-8 whitespace-nowrap animate-marquee">
-                <span className="flex items-center gap-2 text-xs font-mono-tech text-cyan-300 uppercase tracking-widest font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                  India's First Hydration Intelligence Platform
-                </span>
-                <span className="text-cyan-600 font-bold">•</span>
-                <span className="flex items-center gap-2 text-xs font-mono-tech text-sky-300 uppercase tracking-widest font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                  Let's Build Hydration As A Must-Have Habit
-                </span>
-                <span className="text-cyan-600 font-bold">•</span>
-                <span className="flex items-center gap-2 text-xs font-mono-tech text-emerald-300 uppercase tracking-widest font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Eat. Hydrate. Hydrate. Sleep. Repeat.
-                </span>
-              </div>
-            </div>
 
             {/* Dynamic Rolling Headline — Bright Solid White Text (Google AI Studio aesthetic, no quotes, no subtitle) */}
             <div className="relative min-h-[160px] sm:min-h-[180px] flex flex-col justify-center">
