@@ -8,15 +8,23 @@ import { LegalModal } from './LegalModal';
 const ROLLING_POINTS = [
   {
     id: 1,
-    title: "India's first hydration intelligence platform"
+    title: "India's first hydration intelligence platform."
   },
   {
     id: 2,
-    title: "Let's build hydration as a must-have habit"
+    title: "Let's build hydration as a must-have habit."
   },
   {
     id: 3,
     title: "Eat. Hydrate. Hydrate. Sleep. Repeat."
+  },
+  {
+    id: 4,
+    title: "Know when to hydrate, before your body gets dehydrated."
+  },
+  {
+    id: 5,
+    title: "Just 1-2% fall in hydration can lead to loss in focus and cognitive ability!"
   }
 ];
 
@@ -53,16 +61,12 @@ export const LandingPageVersionB: React.FC = () => {
       <div className="absolute top-1/4 left-1/6 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/6 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* HEADER BAR — Clean, Logo Only */}
-      <header className="relative z-40 w-full bg-[#050811]/80 backdrop-blur-xl border-b border-white/10 shrink-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl sm:text-3xl font-black tracking-tight font-display text-white select-none">
-              get<span className="text-cyan-400">Vāri</span>
-            </span>
-          </div>
-        </div>
-      </header>
+      {/* TOP CENTERED BRAND LOGO (No header bar container) */}
+      <div className="relative z-40 w-full pt-6 sm:pt-8 pb-2 flex items-center justify-center shrink-0">
+        <span className="text-3xl sm:text-4xl font-black tracking-tight font-display text-white select-none">
+          get<span className="text-cyan-400">Vāri</span>
+        </span>
+      </div>
 
       {/* MAIN SINGLE FOLD VIEWPORT */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-4 lg:py-6 overflow-y-auto lg:overflow-hidden">
@@ -72,7 +76,7 @@ export const LandingPageVersionB: React.FC = () => {
           <div className="lg:col-span-7 flex flex-col justify-center space-y-6">
 
             {/* Dynamic Rolling Headline — Bright Solid White Text (Google AI Studio aesthetic, no quotes, no subtitle) */}
-            <div className="relative min-h-[160px] sm:min-h-[180px] flex flex-col justify-center">
+            <div className="relative min-h-[220px] sm:min-h-[240px] flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 {ROLLING_POINTS.map((pt, idx) => {
                   if (idx !== activePointIndex) return null;
