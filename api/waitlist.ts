@@ -3,6 +3,7 @@ import path from 'path';
 
 const LOCAL_WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
 const TMP_WAITLIST_FILE = path.join('/tmp', 'waitlist.json');
+const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a067127101a08c7cd3cb6a16';
 
 declare global {
   var __WAITLIST_STORE__: any[];
@@ -12,10 +13,48 @@ if (!globalThis.__WAITLIST_STORE__) {
   globalThis.__WAITLIST_STORE__ = [];
 }
 
-function getWaitlistEntries(): any[] {
+async function fetchCloudWaitlist(): Promise<any[]> {
+  try {
+    const res = await fetch(CLOUD_DB_URL, { headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.data && Array.isArray(json.data.emails)) {
+        return json.data.emails;
+      }
+    }
+  } catch (e) {
+    console.error('Cloud fetch error:', e);
+  }
+  return [];
+}
+
+async function syncCloudWaitlist(list: any[]): Promise<boolean> {
+  try {
+    const res = await fetch(CLOUD_DB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'getvari_waitlist',
+        data: { emails: list }
+      })
+    });
+    return res.ok;
+  } catch (e) {
+    console.error('Cloud sync error:', e);
+    return false;
+  }
+}
+
+async function getWaitlistEntries(): Promise<any[]> {
   const map = new Map<string, any>();
 
-  // 1. Read from local repo file if exists
+  // 1. Fetch from cloud database
+  const cloudList = await fetchCloudWaitlist();
+  cloudList.forEach((item: any) => {
+    if (item && item.email) map.set(item.email.toLowerCase(), item);
+  });
+
+  // 2. Read from local repo file if exists
   try {
     if (fs.existsSync(LOCAL_WAITLIST_FILE)) {
       const content = fs.readFileSync(LOCAL_WAITLIST_FILE, 'utf-8');
@@ -24,11 +63,9 @@ function getWaitlistEntries(): any[] {
         if (item && item.email) map.set(item.email.toLowerCase(), item);
       });
     }
-  } catch (e) {
-    // Ignore read errors
-  }
+  } catch (e) {}
 
-  // 2. Read from /tmp file if exists
+  // 3. Read from /tmp file if exists
   try {
     if (fs.existsSync(TMP_WAITLIST_FILE)) {
       const content = fs.readFileSync(TMP_WAITLIST_FILE, 'utf-8');
@@ -37,11 +74,9 @@ function getWaitlistEntries(): any[] {
         if (item && item.email) map.set(item.email.toLowerCase(), item);
       });
     }
-  } catch (e) {
-    // Ignore read errors
-  }
+  } catch (e) {}
 
-  // 3. Combine with in-memory store
+  // 4. Combine with in-memory store
   if (Array.isArray(globalThis.__WAITLIST_STORE__)) {
     globalThis.__WAITLIST_STORE__.forEach((item: any) => {
       if (item && item.email) map.set(item.email.toLowerCase(), item);
@@ -51,8 +86,8 @@ function getWaitlistEntries(): any[] {
   return Array.from(map.values());
 }
 
-function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): any[] {
-  const list = getWaitlistEntries();
+async function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): Promise<any[]> {
+  const list = await getWaitlistEntries();
   const normalized = newEntry.email.trim().toLowerCase();
 
   const existingIndex = list.findIndex(item => item.email.toLowerCase() === normalized);
@@ -66,15 +101,16 @@ function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: str
 
   globalThis.__WAITLIST_STORE__ = list;
 
+  // Sync to Cloud DB instantly
+  await syncCloudWaitlist(list);
+
   // Try local file first (for dev mode), fallback to /tmp (for Vercel serverless)
   try {
     fs.writeFileSync(LOCAL_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
   } catch (e) {
     try {
       fs.writeFileSync(TMP_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
-    } catch (err) {
-      console.error('Failed to write to /tmp:', err);
-    }
+    } catch (err) {}
   }
 
   return list;
@@ -99,7 +135,7 @@ export default async function handler(req: any, res: any) {
     }
 
     try {
-      const updatedList = saveWaitlistEntry({
+      const updatedList = await saveWaitlistEntry({
         email,
         timestamp: new Date().toISOString(),
         ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown'
@@ -114,7 +150,7 @@ export default async function handler(req: any, res: any) {
   }
 
   // GET Request
-  const list = getWaitlistEntries();
+  const list = await getWaitlistEntries();
 
   const acceptsJson = req.query?.format === 'json' || (req.headers?.accept && req.headers.accept.includes('application/json') && !req.headers.accept.includes('text/html'));
   if (acceptsJson) {

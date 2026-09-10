@@ -66,6 +66,7 @@ if (API_KEY) {
 
 const LOCAL_WAITLIST_FILE = path.join(process.cwd(), 'waitlist.json');
 const TMP_WAITLIST_FILE = path.join('/tmp', 'waitlist.json');
+const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a067127101a08c7cd3cb6a16';
 
 declare global {
   var __WAITLIST_STORE__: any[];
@@ -75,8 +76,42 @@ if (!globalThis.__WAITLIST_STORE__) {
   globalThis.__WAITLIST_STORE__ = [];
 }
 
-function getWaitlistEntries(): any[] {
+async function fetchCloudWaitlist(): Promise<any[]> {
+  try {
+    const res = await fetch(CLOUD_DB_URL, { headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.data && Array.isArray(json.data.emails)) {
+        return json.data.emails;
+      }
+    }
+  } catch (e) {}
+  return [];
+}
+
+async function syncCloudWaitlist(list: any[]): Promise<boolean> {
+  try {
+    const res = await fetch(CLOUD_DB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'getvari_waitlist',
+        data: { emails: list }
+      })
+    });
+    return res.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function getWaitlistEntries(): Promise<any[]> {
   const map = new Map<string, any>();
+
+  const cloudList = await fetchCloudWaitlist();
+  cloudList.forEach((item: any) => {
+    if (item && item.email) map.set(item.email.toLowerCase(), item);
+  });
 
   try {
     if (fs.existsSync(LOCAL_WAITLIST_FILE)) {
@@ -107,8 +142,8 @@ function getWaitlistEntries(): any[] {
   return Array.from(map.values());
 }
 
-function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): any[] {
-  const list = getWaitlistEntries();
+async function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: string }): Promise<any[]> {
+  const list = await getWaitlistEntries();
   const normalized = newEntry.email.trim().toLowerCase();
 
   const existingIndex = list.findIndex(item => item.email.toLowerCase() === normalized);
@@ -122,6 +157,8 @@ function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: str
 
   globalThis.__WAITLIST_STORE__ = list;
 
+  await syncCloudWaitlist(list);
+
   try {
     fs.writeFileSync(LOCAL_WAITLIST_FILE, JSON.stringify(list, null, 2), 'utf-8');
   } catch (e) {
@@ -134,14 +171,14 @@ function saveWaitlistEntry(newEntry: { email: string; timestamp: string; ip: str
 }
 
 // Waitlist Email Collection API Endpoint
-app.post('/api/waitlist', (req, res) => {
+app.post('/api/waitlist', async (req, res) => {
   const { email } = req.body;
   if (!email || typeof email !== 'string' || !email.includes('@')) {
     return res.status(400).json({ error: 'Valid email address is required.' });
   }
 
   try {
-    const updatedList = saveWaitlistEntry({
+    const updatedList = await saveWaitlistEntry({
       email,
       timestamp: new Date().toISOString(),
       ip: (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown'
@@ -155,9 +192,9 @@ app.post('/api/waitlist', (req, res) => {
 });
 
 // View all collected waitlist signups
-app.get('/api/waitlist', (req, res) => {
+app.get('/api/waitlist', async (req, res) => {
   try {
-    const list = getWaitlistEntries();
+    const list = await getWaitlistEntries();
 
     // Return JSON if client explicitly requests JSON (e.g. fetch or curl -H "Accept: application/json")
     const acceptsJson = req.query.format === 'json' || (req.headers.accept && req.headers.accept.includes('application/json') && !req.headers.accept.includes('text/html'));
