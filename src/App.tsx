@@ -15,6 +15,7 @@ import Onboarding from './components/Onboarding';
 import DeviceSimulator from './components/DeviceSimulator';
 import { BLETelemetryService } from './utils/bleTelemetryService';
 import { LandingPage } from './components/LandingPage';
+import { LandingPageVersionB } from './components/LandingPageVersionB';
 
 const bleService = new BLETelemetryService();
 import { 
@@ -229,6 +230,25 @@ export default function App() {
       }
     }
     return 'landing';
+  });
+
+  // Version state controller: 'a' (Multi-fold original) | 'b' (Single-fold rolling text)
+  const [landingVersion, setLandingVersion] = useState<'a' | 'b'>(() => {
+    if (typeof window !== 'undefined') {
+      const port = window.location.port;
+      const search = window.location.search.toLowerCase();
+      const pathname = window.location.pathname.toLowerCase();
+      
+      // Port 3002 or query ?version=a -> Version A
+      if (port === '3002' || search.includes('version=a') || search.includes('v=a') || pathname.includes('/version-a')) {
+        return 'a';
+      }
+      // Port 3003 or 3000 or query ?version=b -> Version B
+      if (port === '3003' || search.includes('version=b') || search.includes('v=b') || pathname.includes('/version-b')) {
+        return 'b';
+      }
+    }
+    return 'b'; // Default to Version B on Port 3000
   });
 
   // Splash screen animation state triggers (liquid vessel fill & logo presentation)
@@ -917,7 +937,19 @@ export default function App() {
 
   // Render Stages
   if (appStage === 'landing') {
-    return <LandingPage onOpenAppDashboard={() => setAppStage('dashboard')} />;
+    if (landingVersion === 'a') {
+      return (
+        <LandingPage 
+          onOpenAppDashboard={() => setAppStage('dashboard')} 
+          onSwitchToVersionB={() => setLandingVersion('b')}
+        />
+      );
+    }
+    return (
+      <LandingPageVersionB 
+        onSwitchToVersionA={() => setLandingVersion('a')}
+      />
+    );
   }
 
   if (appStage === 'splash') {

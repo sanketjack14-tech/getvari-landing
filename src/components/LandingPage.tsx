@@ -10,7 +10,9 @@ import {
   BellOff, 
   ChevronLeft,
   ChevronRight,
-  Droplet
+  Droplet,
+  Layers,
+  Table
 } from 'lucide-react';
 import { MovingDotsBackground } from './MovingDotsBackground';
 import { SermonBanner } from './SermonBanner';
@@ -24,9 +26,10 @@ import { WaitlistAdminModal } from './WaitlistAdminModal';
 
 interface LandingPageProps {
   onOpenAppDashboard?: () => void;
+  onSwitchToVersionB?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = () => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) => {
   const [showHydrationGate, setShowHydrationGate] = useState<boolean>(() => {
     try {
       return !sessionStorage.getItem('getvari_hydration_gate_seen');
@@ -78,10 +81,33 @@ export const LandingPage: React.FC<LandingPageProps> = () => {
             <span className="text-2xl sm:text-3xl font-black tracking-tight font-display text-white">
               get<span className="text-cyan-400">Vāri</span>
             </span>
+            <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-400/30">
+              Version A • Multi-Fold
+            </span>
           </div>
 
           {/* Header Action CTA */}
           <div className="flex items-center gap-3">
+            {onSwitchToVersionB && (
+              <button
+                onClick={onSwitchToVersionB}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-300 transition-all cursor-pointer"
+              >
+                <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Switch to Version B</span>
+              </button>
+            )}
+
+            <a
+              href="/api/waitlist"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/40 text-cyan-300 font-mono-tech text-xs tracking-wide transition-all cursor-pointer"
+            >
+              <Table className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Waitlist Table</span>
+            </a>
+
             <a
               href="#waitlist"
               className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-bold font-display text-xs tracking-wide shadow-[0_0_20px_rgba(56,189,248,0.35)] transition-all cursor-pointer"

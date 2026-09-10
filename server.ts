@@ -30,6 +30,8 @@ register({
 const app = express();
 const PORT_LANDING = 3000;
 const PORT_APP = 3001;
+const PORT_VERSION_A = 3002;
+const PORT_VERSION_B = 3003;
 
 app.use(express.json());
 app.use(cors());
@@ -499,11 +501,19 @@ async function startServer() {
   }
 
   app.listen(PORT_LANDING, '0.0.0.0', () => {
-    console.log(`🌐 GetVari Landing Page running on http://localhost:${PORT_LANDING}`);
+    console.log(`🌐 GetVari Main Server running on http://localhost:${PORT_LANDING}`);
   });
 
   app.listen(PORT_APP, '0.0.0.0', () => {
     console.log(`📱 GetVari App Twin & Dashboard running on http://localhost:${PORT_APP}`);
+  });
+
+  app.listen(PORT_VERSION_A, '0.0.0.0', () => {
+    console.log(`✨ GetVari Version A (Original Multi-Fold) running on http://localhost:${PORT_VERSION_A}`);
+  });
+
+  app.listen(PORT_VERSION_B, '0.0.0.0', () => {
+    console.log(`🚀 GetVari Version B (Single-Fold Rolling Text) running on http://localhost:${PORT_VERSION_B}`);
   });
 }
 
