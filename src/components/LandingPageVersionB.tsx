@@ -65,6 +65,10 @@ export const LandingPageVersionB: React.FC = () => {
         <p className="text-xs sm:text-sm font-mono-tech text-cyan-300 uppercase tracking-widest font-bold mt-2">
           India's first hydration intelligence platform.
         </p>
+        <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-[10px] font-mono-tech font-bold uppercase tracking-widest mt-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+          COMING SOON
+        </span>
       </div>
 
       {/* MAIN SINGLE FOLD VIEWPORT */}
@@ -150,7 +154,7 @@ export const LandingPageVersionB: React.FC = () => {
 
       {/* 3-STEP HYDRATION GATE ENTRY POPUP */}
       {showHydrationGate && (
-        <HydrationGateModal onComplete={handleGateComplete} />
+        <HydrationGateModal isOpen={showHydrationGate} onComplete={handleGateComplete} />
       )}
 
       {/* LEGAL MODALS */}
