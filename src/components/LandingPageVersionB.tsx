@@ -8,22 +8,18 @@ import { LegalModal } from './LegalModal';
 const ROLLING_POINTS = [
   {
     id: 1,
-    title: "India's first hydration intelligence platform."
-  },
-  {
-    id: 2,
     title: "Let's build hydration as a must-have habit."
   },
   {
-    id: 3,
+    id: 2,
     title: "Eat. Hydrate. Hydrate. Sleep. Repeat."
   },
   {
-    id: 4,
+    id: 3,
     title: "Know when to hydrate, before your body gets dehydrated."
   },
   {
-    id: 5,
+    id: 4,
     title: "Just 1-2% fall in hydration can lead to loss in focus and cognitive ability!"
   }
 ];
@@ -61,11 +57,14 @@ export const LandingPageVersionB: React.FC = () => {
       <div className="absolute top-1/4 left-1/6 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/6 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* TOP CENTERED BRAND LOGO (No header bar container) */}
-      <div className="relative z-40 w-full pt-6 sm:pt-8 pb-2 flex items-center justify-center shrink-0">
-        <span className="text-3xl sm:text-4xl font-black tracking-tight font-display text-white select-none">
+      {/* TOP CENTERED BRAND LOGO & PLATFORM SUBTITLE */}
+      <div className="relative z-40 w-full pt-6 sm:pt-8 pb-2 flex flex-col items-center justify-center text-center shrink-0">
+        <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-display text-white select-none drop-shadow-[0_0_25px_rgba(56,189,248,0.2)]">
           get<span className="text-cyan-400">Vāri</span>
         </span>
+        <p className="text-xs sm:text-sm font-mono-tech text-cyan-300 uppercase tracking-widest font-bold mt-2">
+          India's first hydration intelligence platform.
+        </p>
       </div>
 
       {/* MAIN SINGLE FOLD VIEWPORT */}
