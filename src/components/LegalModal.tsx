@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShieldCheck, FileText, Lock, Globe, Scale, AlertCircle } from 'lucide-react';
+import { useAutoTheme } from '../utils/useAutoTheme';
 
 interface LegalModalProps {
   isOpen?: boolean;
@@ -9,36 +10,47 @@ interface LegalModalProps {
 }
 
 export const LegalModal: React.FC<LegalModalProps> = ({ isOpen = true, type, onClose }) => {
+  const { theme } = useAutoTheme();
   if (!isOpen || !type) return null;
+
+  const isLight = theme === 'light';
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#03060d]/90 backdrop-blur-xl">
+      <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors ${
+        isLight ? 'bg-slate-900/40 backdrop-blur-md' : 'bg-[#03060d]/90 backdrop-blur-xl'
+      }`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-3xl max-h-[85vh] bg-[#090e1c] border border-cyan-500/40 rounded-3xl p-6 sm:p-8 flex flex-col glass-card text-gray-200 shadow-[0_0_80px_rgba(56,189,248,0.2)] overflow-hidden"
+          className={`relative w-full max-w-3xl max-h-[85vh] rounded-3xl p-6 sm:p-8 flex flex-col overflow-hidden transition-all ${
+            isLight
+              ? 'bg-white border border-slate-200 text-slate-900 shadow-2xl'
+              : 'bg-[#090e1c] border border-cyan-500/40 text-gray-200 glass-card shadow-[0_0_80px_rgba(56,189,248,0.2)]'
+          }`}
         >
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
+            className={`absolute top-5 right-5 p-2 rounded-full transition-colors cursor-pointer ${
+              isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-600' : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white'
+            }`}
           >
             <X className="w-5 h-5" />
           </button>
 
           {/* Modal Header */}
-          <div className="flex items-center gap-3.5 pb-4 border-b border-white/10 shrink-0">
-            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-cyan-400">
+          <div className={`flex items-center gap-3.5 pb-4 border-b shrink-0 ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+            <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-cyan-600">
               {type === 'terms' ? <FileText className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
             </div>
             <div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-white font-display tracking-tight">
+              <h3 className={`text-xl sm:text-2xl font-extrabold font-display tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 {type === 'terms' ? 'Terms of Service' : 'Privacy Policy'}
               </h3>
-              <p className="text-xs text-cyan-300/80 font-mono-tech mt-0.5">
+              <p className={`text-xs font-mono-tech mt-0.5 ${isLight ? 'text-cyan-600 font-bold' : 'text-cyan-300/80'}`}>
                 getVāri Technologies Private Limited • Last updated September 2026
               </p>
             </div>

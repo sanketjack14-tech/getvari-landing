@@ -4,13 +4,13 @@ export function useAutoTheme() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window === 'undefined') return 'dark';
     
-    // Check if user manually saved a preference
+    if (document.documentElement.classList.contains('light-mode')) return 'light';
+
     const saved = localStorage.getItem('getvari_theme_mode');
     if (saved === 'light' || saved === 'dark') {
       return saved as 'dark' | 'light';
     }
 
-    // Dynamic local time evaluation (6 AM to 6 PM is Daytime / Light Mode, 6 PM to 6 AM is Nighttime / Dark Mode)
     const hour = new Date().getHours();
     const isDaytime = hour >= 6 && hour < 18;
 
@@ -27,6 +27,16 @@ export function useAutoTheme() {
       document.documentElement.classList.remove('light-mode');
       document.body.classList.remove('light-mode');
     }
+
+    const handleThemeEvent = () => {
+      const isLightNow = document.documentElement.classList.contains('light-mode');
+      setTheme(isLightNow ? 'light' : 'dark');
+    };
+
+    window.addEventListener('getvari-theme-change', handleThemeEvent);
+    return () => {
+      window.removeEventListener('getvari-theme-change', handleThemeEvent);
+    };
   }, [theme]);
 
   const toggleTheme = () => {
@@ -34,6 +44,14 @@ export function useAutoTheme() {
     setTheme(next);
     try {
       localStorage.setItem('getvari_theme_mode', next);
+      if (next === 'light') {
+        document.documentElement.classList.add('light-mode');
+        document.body.classList.add('light-mode');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+        document.body.classList.remove('light-mode');
+      }
+      window.dispatchEvent(new Event('getvari-theme-change'));
     } catch (e) {
       console.error(e);
     }
@@ -41,3 +59,4 @@ export function useAutoTheme() {
 
   return { theme, toggleTheme, setTheme };
 }
+

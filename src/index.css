@@ -79,18 +79,80 @@
   transform-origin: center center;
 }
 
-/* Elegant High-Contrast Light Mode Overrides */
+/* ==========================================================================
+   LIGHT MODE SYSTEM OVERRIDES - Pure White Cards, 0 Dark Patches, High Contrast
+   ========================================================================== */
+
+/* 1. Root & Document Body Reset */
+html.light-mode,
+body.light-mode,
 .light-mode {
   background-color: #ffffff !important;
   background: #ffffff !important;
   color: #070c18 !important;
 }
 
-.light-mode.dot-grid {
-  background-image: radial-gradient(rgba(2, 8, 19, 0.08) 1px, transparent 1px) !important;
+.light-mode.dot-grid,
+.light-mode .dot-grid {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px) !important;
 }
 
-/* Force all headings to crisp deep black/navy in Light Mode */
+/* 2. Container & Card Overrides (Eliminates ALL dark grey patches) */
+.light-mode .glass,
+.light-mode .glass-card,
+.light-mode [class*="glass"],
+.light-mode [class*="bg-[#0"],
+.light-mode [class*="bg-[#1"],
+.light-mode [class*="bg-black"],
+.light-mode [class*="bg-slate-8"],
+.light-mode [class*="bg-slate-9"],
+.light-mode [class*="bg-gray-8"],
+.light-mode [class*="bg-gray-9"],
+.light-mode [class*="bg-neutral-8"],
+.light-mode [class*="bg-neutral-9"] {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #070c18 !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* 3. Special Status Containers & Badges in Light Mode */
+.light-mode [class*="bg-red-950"] {
+  background-color: #fef2f2 !important;
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+.light-mode [class*="bg-amber-950"],
+.light-mode [class*="bg-amber-500/10"],
+.light-mode [class*="bg-amber-500/20"] {
+  background-color: #fffbeb !important;
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+
+.light-mode [class*="bg-cyan-950"],
+.light-mode [class*="bg-blue-950"],
+.light-mode [class*="bg-cyan-500/10"],
+.light-mode [class*="bg-cyan-500/20"] {
+  background-color: #f0f9ff !important;
+  background: #f0f9ff !important;
+  border-color: #bae6fd !important;
+  color: #0369a1 !important;
+}
+
+.light-mode [class*="bg-emerald-950"],
+.light-mode [class*="bg-emerald-500/10"] {
+  background-color: #ecfdf5 !important;
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+/* 4. Headings & High-Contrast Typography */
 .light-mode h1,
 .light-mode h2,
 .light-mode h3,
@@ -101,140 +163,101 @@
   -webkit-text-fill-color: #070c18 !important;
 }
 
-/* Force transparent gradient texts to crisp dark slate in Light Mode */
+/* Override all light-blue washed-out gradient text in Light Mode */
 .light-mode .bg-clip-text,
 .light-mode [class*="bg-clip-text"],
-.light-mode .text-transparent {
+.light-mode .text-transparent,
+.light-mode .text-gradient-cyan,
+.light-mode .text-gradient-blue {
   background: none !important;
   -webkit-background-clip: unset !important;
   background-clip: unset !important;
-  -webkit-text-fill-color: #070c18 !important;
-  color: #070c18 !important;
+  -webkit-text-fill-color: #0284c7 !important;
+  color: #0284c7 !important;
 }
 
-/* All body text, paragraphs, labels, and spans */
-.light-mode .text-white,
-.light-mode .text-gray-100,
-.light-mode .text-gray-200,
-.light-mode .text-gray-300,
-.light-mode .text-gray-400,
-.light-mode .text-neutral-50,
-.light-mode .text-neutral-100,
-.light-mode .text-neutral-200,
-.light-mode .text-neutral-300,
-.light-mode .text-neutral-400 {
-  color: #0f172a !important;
-}
-
-.light-mode .text-gray-500,
-.light-mode .text-neutral-500 {
-  color: #334155 !important;
-}
-
-/* Ensure Cyan and Sky highlights have high-contrast legibility in Light Mode */
+/* Override low contrast Cyan & Sky text to readable deep sky/navy (#0284c7 / #0369a1) */
+.light-mode .text-cyan-100,
 .light-mode .text-cyan-200,
 .light-mode .text-cyan-300,
 .light-mode .text-cyan-400,
 .light-mode .text-cyan-500,
+.light-mode .text-sky-200,
 .light-mode .text-sky-300,
 .light-mode .text-sky-400,
-.light-mode .text-[#00f2fe] {
-  color: #0284c7 !important; /* Sky/Cyan 600 - crisp contrast on white */
+.light-mode .text-sky-500,
+.light-mode [class*="00f2fe"] {
+  color: #0284c7 !important;
 }
 
-/* Glass cards and containers in Light Mode */
-.light-mode .glass,
-.light-mode [class*="glass"] {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 10px 35px -10px rgba(15, 23, 42, 0.08) !important;
-  color: #070c18 !important;
+/* Override light grey body text to crisp dark slate */
+.light-mode .text-white,
+.light-mode .text-gray-100,
+.light-mode .text-gray-200,
+.light-mode .text-gray-300,
+.light-mode .text-neutral-50,
+.light-mode .text-neutral-100,
+.light-mode .text-neutral-200,
+.light-mode .text-neutral-300 {
+  color: #0f172a !important;
 }
 
-.light-mode [class*="bg-neutral-"],
-.light-mode [class*="bg-black/"],
-.light-mode [class*="bg-white/"],
-.light-mode [class*="bg-[#051124]"],
-.light-mode [class*="bg-[#070d1e]"] {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #070c18 !important;
-  border-color: #e2e8f0 !important;
+.light-mode .text-gray-400,
+.light-mode .text-gray-500,
+.light-mode .text-neutral-400,
+.light-mode .text-neutral-500 {
+  color: #334155 !important;
 }
 
-/* Inputs and Placeholders in Light Mode */
+/* 5. Inputs & Form Controls in Light Mode */
 .light-mode input[type="email"],
 .light-mode input[type="text"],
 .light-mode input[type="number"],
-.light-mode textarea {
+.light-mode textarea,
+.light-mode select {
   background-color: #ffffff !important;
+  background: #ffffff !important;
   color: #070c18 !important;
-  border-color: #cbd5e1 !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
-.light-mode input::placeholder {
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
   color: #64748b !important;
 }
 
-/* Footer & Legal bar in Light Mode */
-.light-mode footer {
+/* 6. Footer, Header & Sermon Banner in Light Mode */
+.light-mode footer,
+.light-mode header,
+.light-mode [class*="SermonBanner"] {
   background-color: #f8fafc !important;
-  border-top-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
   color: #334155 !important;
 }
 
 .light-mode footer div,
-.light-mode footer button {
+.light-mode footer button,
+.light-mode [class*="SermonBanner"] p {
   color: #334155 !important;
 }
 
-.light-mode footer#main-nav-bar button.bg-white\/10 {
-  background-color: rgba(2, 8, 19, 0.06) !important;
-  color: #020813 !important;
+/* 7. Popups & Modal Windows in Light Mode */
+.light-mode .fixed.inset-0.z-50 {
+  background-color: rgba(15, 23, 42, 0.45) !important;
 }
 
-/* Ensure prompt inputs and drop-down selectors are readable in light mode */
-.light-mode select,
-.light-mode input[type="text"],
-.light-mode input[type="number"],
-.light-mode textarea {
+.light-mode .fixed.inset-0.z-50 > div[class*="rounded-3xl"] {
   background-color: #ffffff !important;
-  color: #020813 !important;
-  border: 1px solid rgba(2, 8, 19, 0.2) !important;
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #070c18 !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
 }
 
-.light-mode select option {
-  background-color: #ffffff !important;
-  color: #020813 !important;
-}
-
-/* Circular hydration ring container stroke on white background */
+/* SVG ring stroke in Light Mode */
 .light-mode circle[stroke="rgba(255,255,255,0.03)"] {
   stroke: rgba(2, 8, 19, 0.05) !important;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 25s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
 
