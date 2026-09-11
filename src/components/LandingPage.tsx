@@ -177,7 +177,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
                     <button
                       onClick={() => setHeroState('mild')}
                       className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                        heroState === 'mild' ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-400/40' : 'text-gray-400 hover:text-white'
+                        heroState === 'mild' 
+                          ? theme === 'light'
+                            ? 'bg-[#e0f2fe] text-[#0369a1] font-bold border border-[#7dd3fc]'
+                            : 'bg-sky-500/20 text-sky-300 font-bold border border-sky-400/40' 
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       65 (Mild)
@@ -185,7 +189,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
                     <button
                       onClick={() => setHeroState('high')}
                       className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                        heroState === 'high' ? 'bg-red-500/20 text-red-400 font-bold border border-red-500/40' : 'text-gray-400 hover:text-white'
+                        heroState === 'high' 
+                          ? theme === 'light'
+                            ? 'bg-[#fef2f2] text-[#991b1b] font-bold border border-[#fca5a5]'
+                            : 'bg-red-500/20 text-red-400 font-bold border border-red-500/40' 
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       85 (High Risk)
@@ -193,11 +201,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
                   </div>
 
                   {/* Floating Hydration Risk Score Tag */}
-                  <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono-tech shadow-lg flex items-center gap-1.5 transition-all">
+                  <div className={`px-2.5 py-1 rounded-xl backdrop-blur-md border text-xs font-mono-tech shadow-lg flex items-center gap-1.5 transition-all ${
+                    theme === 'light' ? 'bg-[#f0f9ff] border-[#bae6fd]' : 'bg-black/85 border-cyan-500/30'
+                  }`}>
                     <span className={`w-2 h-2 rounded-full animate-ping ${
                       heroState === 'high' ? 'bg-red-500' : 'bg-sky-400'
                     }`} />
-                    <span className={heroState === 'high' ? 'text-red-400 font-bold' : 'text-sky-300 font-semibold'}>
+                    <span className={
+                      heroState === 'high' 
+                        ? (theme === 'light' ? 'text-[#991b1b] font-bold' : 'text-red-400 font-bold') 
+                        : (theme === 'light' ? 'text-[#0369a1] font-bold' : 'text-sky-300 font-semibold')
+                    }>
                       <span className="hidden sm:inline">Hydration </span>Risk: {heroState === 'high' ? '85' : '65'}
                     </span>
                   </div>
@@ -248,12 +262,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
                   transition={{ duration: 0.3 }}
                   className={`w-full mt-4 p-3 rounded-xl backdrop-blur-md text-center border transition-all ${
                     heroState === 'high'
-                      ? 'bg-red-950/60 border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
-                      : 'bg-sky-950/40 border-sky-500/30'
+                      ? theme === 'light'
+                        ? 'bg-[#fef2f2] border-[#fca5a5] shadow-sm'
+                        : 'bg-red-950/60 border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
+                      : theme === 'light'
+                        ? 'bg-[#e0f2fe] border-[#7dd3fc] shadow-sm'
+                        : 'bg-sky-950/40 border-sky-500/30'
                   }`}
                 >
                   <span className={`text-xs font-mono-tech font-bold uppercase tracking-wider ${
-                    heroState === 'high' ? 'text-red-400' : 'text-sky-300'
+                    heroState === 'high'
+                      ? theme === 'light' ? 'text-[#991b1b]' : 'text-red-400'
+                      : theme === 'light' ? 'text-[#0369a1]' : 'text-sky-300'
                   }`}>
                     {heroState === 'high' ? 'High Dehydration' : 'Mild Dehydration'}
                   </span>

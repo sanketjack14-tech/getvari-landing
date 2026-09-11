@@ -136,11 +136,14 @@ body.light-mode,
 
 .light-mode [class*="bg-cyan-950"],
 .light-mode [class*="bg-blue-950"],
+.light-mode [class*="bg-sky-950"],
+.light-mode [class*="bg-sky-500/10"],
+.light-mode [class*="bg-sky-500/20"],
 .light-mode [class*="bg-cyan-500/10"],
 .light-mode [class*="bg-cyan-500/20"] {
-  background-color: #f0f9ff !important;
-  background: #f0f9ff !important;
-  border-color: #bae6fd !important;
+  background-color: #e0f2fe !important;
+  background: #e0f2fe !important;
+  border-color: #7dd3fc !important;
   color: #0369a1 !important;
 }
 
