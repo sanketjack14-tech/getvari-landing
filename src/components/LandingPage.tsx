@@ -51,6 +51,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
   const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
   const [heroState, setHeroState] = useState<'mild' | 'high'>('mild');
 
+  // Ensure Version A is not indexed or crawled by search engines
+  React.useEffect(() => {
+    let meta = document.querySelector('meta[name="robots"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'robots');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', 'noindex, nofollow');
+
+    return () => {
+      meta?.setAttribute('content', 'index, follow');
+    };
+  }, []);
+
   // Auto change hero hydration risk state between Mild (65) and High (85) every 5 seconds
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -70,53 +85,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
       {/* Interactive Google AI Studio Moving Dots Canvas Background */}
       <MovingDotsBackground />
 
-      {/* Sermons Section on Top (5 sermons rotating every 10 seconds, clean header) */}
+      {/* Sermons Section on Top */}
       <SermonBanner />
 
-      {/* Header with official V logo icon */}
-      <header className="sticky top-0 z-40 w-full bg-[#070a11]/80 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Clean Logo — Bigger */}
-          <div className="flex items-center gap-3">
-            <span className="text-2xl sm:text-3xl font-black tracking-tight font-display text-white">
-              get<span className="text-cyan-400">Vāri</span>
-            </span>
-            <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-400/30">
-              Version A • Multi-Fold
-            </span>
-          </div>
-
-          {/* Header Action CTA */}
-          <div className="flex items-center gap-3">
-            {onSwitchToVersionB && (
-              <button
-                onClick={onSwitchToVersionB}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-300 transition-all cursor-pointer"
-              >
-                <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Switch to Version B</span>
-              </button>
-            )}
-
-            <a
-              href="/api/waitlist"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/40 text-cyan-300 font-mono-tech text-xs tracking-wide transition-all cursor-pointer"
-            >
-              <Table className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Waitlist Table</span>
-            </a>
-
-            <a
-              href="#waitlist"
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-bold font-display text-xs tracking-wide shadow-[0_0_20px_rgba(56,189,248,0.35)] transition-all cursor-pointer"
-            >
-              Join Waitlist
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* TOP CENTERED BRAND LOGO (No header bar, badges, or version switchers) */}
+      <div className="relative z-40 w-full pt-8 pb-4 flex items-center justify-center shrink-0">
+        <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-display text-white select-none drop-shadow-[0_0_25px_rgba(56,189,248,0.2)]">
+          get<span className="text-cyan-400">Vāri</span>
+        </span>
+      </div>
 
       {/* Main Page Container */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
