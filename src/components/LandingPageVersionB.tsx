@@ -106,7 +106,11 @@ export const LandingPageVersionB: React.FC = () => {
                       exit={{ opacity: 0, y: -15, filter: "blur(8px)" }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
                     >
-                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight bg-gradient-to-br from-white via-cyan-100 to-sky-400 bg-clip-text text-transparent leading-[1.12]">
+                      <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight leading-[1.12] ${
+                        theme === 'light'
+                          ? 'text-[#070c18]'
+                          : 'bg-gradient-to-br from-white via-cyan-100 to-sky-400 bg-clip-text text-transparent'
+                      }`}>
                         {pt.title}
                       </h1>
                     </motion.div>
