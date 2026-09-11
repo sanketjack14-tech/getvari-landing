@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Sun, Moon } from 'lucide-react';
 import { MovingDotsBackground } from './MovingDotsBackground';
 import { WaitlistForm } from './WaitlistForm';
 import { HydrationGateModal } from './HydrationGateModal';
 import { LegalModal } from './LegalModal';
+import { useAutoTheme } from '../utils/useAutoTheme';
 
 const ROLLING_POINTS = [
   {
@@ -25,6 +27,8 @@ const ROLLING_POINTS = [
 ];
 
 export const LandingPageVersionB: React.FC = () => {
+  const { theme, toggleTheme } = useAutoTheme();
+
   // Hydration Gate Entry Popup state
   const [showHydrationGate, setShowHydrationGate] = useState<boolean>(true);
 
@@ -49,9 +53,20 @@ export const LandingPageVersionB: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen h-screen flex flex-col bg-[#050811] text-gray-100 font-body selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
+    <div className={`relative min-h-screen h-screen flex flex-col font-body selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden ${theme === 'light' ? 'light-mode bg-white text-gray-900' : 'bg-[#050811] text-gray-100'}`}>
       {/* Interactive Google AI Studio Moving Dots Background */}
       <MovingDotsBackground />
+
+      {/* Day / Night Theme Toggle Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={toggleTheme}
+          title={theme === 'light' ? 'Day Mode Active (Click for Night Mode)' : 'Night Mode Active (Click for Day Mode)'}
+          className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md text-cyan-400 transition-all shadow-lg cursor-pointer"
+        >
+          {theme === 'light' ? <Sun className="w-4 h-4 text-amber-500 animate-spin [animation-duration:12s]" /> : <Moon className="w-4 h-4 text-cyan-300" />}
+        </button>
+      </div>
 
       {/* Glowing Ambient Background Blurs */}
       <div className="absolute top-1/4 left-1/6 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
@@ -59,13 +74,13 @@ export const LandingPageVersionB: React.FC = () => {
 
       {/* TOP CENTERED BRAND LOGO & PLATFORM SUBTITLE */}
       <div className="relative z-40 w-full pt-6 sm:pt-8 pb-2 flex flex-col items-center justify-center text-center shrink-0">
-        <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-display text-white select-none drop-shadow-[0_0_25px_rgba(56,189,248,0.2)]">
+        <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight font-display select-none drop-shadow-[0_0_25px_rgba(56,189,248,0.2)]">
           get<span className="text-cyan-400">Vāri</span>
         </span>
-        <p className="text-xs sm:text-sm font-mono-tech text-cyan-300 uppercase tracking-widest font-bold mt-2">
+        <p className="text-xs sm:text-sm font-mono-tech text-cyan-500 uppercase tracking-widest font-bold mt-2">
           India's first hydration intelligence platform.
         </p>
-        <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-[10px] font-mono-tech font-bold uppercase tracking-widest mt-2">
+        <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-[10px] font-mono-tech font-bold uppercase tracking-widest mt-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
           COMING SOON
         </span>

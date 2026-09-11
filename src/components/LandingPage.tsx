@@ -12,7 +12,9 @@ import {
   ChevronRight,
   Droplet,
   Layers,
-  Table
+  Table,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { MovingDotsBackground } from './MovingDotsBackground';
 import { SermonBanner } from './SermonBanner';
@@ -23,6 +25,7 @@ import { LedVibrationSimulator } from './LedVibrationSimulator';
 import { LegalModal } from './LegalModal';
 import { HydrationGateModal } from './HydrationGateModal';
 import { WaitlistAdminModal } from './WaitlistAdminModal';
+import { useAutoTheme } from '../utils/useAutoTheme';
 
 interface LandingPageProps {
   onOpenAppDashboard?: () => void;
@@ -30,6 +33,8 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) => {
+  const { theme, toggleTheme } = useAutoTheme();
+
   const [showHydrationGate, setShowHydrationGate] = useState<boolean>(() => {
     try {
       return !sessionStorage.getItem('getvari_hydration_gate_seen');
@@ -81,9 +86,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#070a11] text-gray-100 font-body selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden">
+    <div className={`relative min-h-screen font-body selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden ${theme === 'light' ? 'light-mode bg-white text-gray-900' : 'bg-[#070a11] text-gray-100'}`}>
       {/* Interactive Google AI Studio Moving Dots Canvas Background */}
       <MovingDotsBackground />
+
+      {/* Day / Night Theme Toggle Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={toggleTheme}
+          title={theme === 'light' ? 'Day Mode Active (Click for Night Mode)' : 'Night Mode Active (Click for Day Mode)'}
+          className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md text-cyan-400 transition-all shadow-lg cursor-pointer"
+        >
+          {theme === 'light' ? <Sun className="w-4 h-4 text-amber-500 animate-spin [animation-duration:12s]" /> : <Moon className="w-4 h-4 text-cyan-300" />}
+        </button>
+      </div>
 
       {/* Sermons Section on Top */}
       <SermonBanner />
