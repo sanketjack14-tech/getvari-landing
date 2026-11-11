@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { Sun, Moon } from 'lucide-react';
 import { MovingDotsBackground } from './MovingDotsBackground';
 import { WaitlistForm } from './WaitlistForm';
 import { HydrationGateModal } from './HydrationGateModal';
 import { LegalModal } from './LegalModal';
 import { useAutoTheme } from '../utils/useAutoTheme';
-
-const ROLLING_POINTS = [
-  {
-    id: 1,
-    title: "Let's build hydration as a must-have habit."
-  },
-  {
-    id: 2,
-    title: "Eat. Hydrate. Hydrate. Sleep. Repeat."
-  },
-  {
-    id: 3,
-    title: "Know when to hydrate, before your body gets dehydrated."
-  },
-  {
-    id: 4,
-    title: "Just 1-2% fall in hydration can lead to loss in focus and cognitive ability!"
-  }
-];
 
 export const LandingPageVersionB: React.FC = () => {
   const { theme, toggleTheme } = useAutoTheme();
@@ -41,16 +22,7 @@ export const LandingPageVersionB: React.FC = () => {
     setShowHydrationGate(false);
   };
 
-  const [activePointIndex, setActivePointIndex] = useState<number>(0);
   const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
-
-  // Auto-rotate the active rolling point every 4 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActivePointIndex((prev) => (prev + 1) % ROLLING_POINTS.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className={`relative min-h-screen h-screen flex flex-col font-body selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden ${theme === 'light' ? 'light-mode bg-white text-gray-900' : 'bg-[#050811] text-gray-100'}`}>
@@ -78,7 +50,7 @@ export const LandingPageVersionB: React.FC = () => {
           get<span className="text-cyan-400">Vāri</span>
         </span>
         <p className="text-xs sm:text-sm font-mono-tech text-cyan-500 uppercase tracking-widest font-bold mt-2">
-          India's first hydration intelligence platform.
+          Building India's Hydration Habit
         </p>
         <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-[10px] font-mono-tech font-bold uppercase tracking-widest mt-2">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
@@ -90,33 +62,23 @@ export const LandingPageVersionB: React.FC = () => {
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-4 lg:py-6 overflow-y-auto lg:overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center my-auto">
 
-          {/* LEFT COLUMN: CONTINUOUS ROLLING TEXT & BRIGHT WHITE GOOGLE AI STUDIO HEADLINE */}
+          {/* LEFT COLUMN: HEADLINE */}
           <div className="lg:col-span-7 flex flex-col justify-center space-y-6">
 
-            {/* Dynamic Rolling Headline — Bright Solid White Text (Google AI Studio aesthetic, no quotes, no subtitle) */}
-            <div className="relative min-h-[220px] sm:min-h-[240px] flex flex-col justify-center">
-              <AnimatePresence mode="wait">
-                {ROLLING_POINTS.map((pt, idx) => {
-                  if (idx !== activePointIndex) return null;
-                  return (
-                    <motion.div
-                      key={pt.id}
-                      initial={{ opacity: 0, y: 15, filter: "blur(8px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                      exit={{ opacity: 0, y: -15, filter: "blur(8px)" }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                    >
-                      <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight leading-[1.12] ${
-                        theme === 'light'
-                          ? 'text-[#070c18]'
-                          : 'bg-gradient-to-br from-white via-cyan-100 to-sky-400 bg-clip-text text-transparent'
-                      }`}>
-                        {pt.title}
-                      </h1>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+            <div className="relative flex flex-col justify-center">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              >
+                <h1 className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black font-display tracking-tight leading-[1.15] ${
+                  theme === 'light'
+                    ? 'text-[#070c18]'
+                    : 'bg-gradient-to-br from-white via-cyan-100 to-sky-400 bg-clip-text text-transparent'
+                }`}>
+                  Our body is made up of 80% water. Then why do we ignore hydration 80% of the time?
+                </h1>
+              </motion.div>
             </div>
 
           </div>

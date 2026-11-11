@@ -117,7 +117,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
         {/* SECTION 1: HERO & Know when to drink — before your body tells you. */}
         <section id="predictive" className="py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 space-y-6">
-            {/* Tech badge - India's first hydration intelligence wearable */}
+            {/* Tech badge - Building India's Hydration Habit */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -125,7 +125,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSwitchToVersionB }) 
               className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/25 text-cyan-300 text-xs font-mono-tech uppercase tracking-wider"
             >
               <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>India's first hydration intelligence wearable</span>
+              <span>Building India's Hydration Habit</span>
             </motion.div>
 
             {/* Main Headline */}
